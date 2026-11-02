@@ -43,8 +43,9 @@ either: it guesses from the reporter's browser, not from the tenant and the form
 ## How the count was made
 
 - One id, one report: the ticket export repeats reports across its pages.
-- The cause comes from the tenant and the channel (`causes.ts`), as on the #4471 page. Reports the desk read as
-  a one-day move count as `shift`, not under the tenant's cause.
+- The counts use the desk's own view, as on the #4471 page: the cause comes from the tenant and the channel
+  (`causes.ts`), and every report counts where it's filed. Reports the desk read as a one-day move stay counted
+  under their filed cause, footnoted, and also make up `shift`.
 - Every body was read: apart from the one-day moves, each describes a day and month that swapped.
 
 The desk's own table, for comparison:

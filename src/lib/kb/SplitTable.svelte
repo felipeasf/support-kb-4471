@@ -36,7 +36,14 @@
   </tbody>
 </table>
 
+{#each split.problems as p (p.problem)}
+  {#if p.readAsShift}
+    <p class="note">{p.readAsShift} of the <code>{p.problem}</code> reports read as a one-day move: counted under <code>{p.problem}</code>, where they're filed, and again as <code>shift</code>.</p>
+  {/if}
+{/each}
+
 <style>
   .sum { font-size: 1.1rem; }
   .what { color: var(--muted); font-size: 0.85em; }
+  .note { color: var(--muted); font-size: 0.85em; }
 </style>
