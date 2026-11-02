@@ -1,0 +1,54 @@
+---
+layout: runbook
+title: '#4471 split · three problems, three tickets'
+owner: felipeasf
+status: proposed
+reviewed: 2026-11-01
+signature: v1.eyJzdWIiOiIyNTA3IiwiYXVkIjoiY2hhbGxlbmdlOndoYXQtaXQtc2hvd3MiLCJpYXQiOjE3OTM1ODY2MjcsImV4cCI6MTc5MzY3MzAyN30.8JiciwkgJ_RlxhAtCIcDGZ9WjrjEtJb0N2uc6EFrQa8
+---
+
+<script>
+  import SplitTable from '#lib/kb/SplitTable.svelte';
+  import CauseTable from '#lib/kb/CauseTable.svelte';
+  import RenderStamp from '#lib/kb/RenderStamp.svelte';
+  import Callout from '#lib/kb/Callout.svelte';
+</script>
+
+[#4471](/kb/incidents/4471) is marked known: one issue, one fix queued. Read report by report, it holds
+three problems. Each one now has its own ticket, so the parser fix closes only the reports it causes.
+
+<Callout kind="warn">
+Shipping the parser fix and closing #4471 leaves two bugs open with nobody on them.
+</Callout>
+
+## The problems
+
+<SplitTable ticket={4471} />
+
+- **parser.** The shared parser reads every date month first. Every tenant on file writes the day first,
+  so day and month swap. This is the bug #4471 names.
+- **hint.** The booking-v3 form prints `MM/DD/YYYY` under its date field. Its tenants write the day first,
+  so people type month first because the hint tells them to, and the form reads the date day first.
+  The fix is the hint in booking-v3, not the parser.
+- **shift.** A few reports describe a date that moves by one day, not a swap: "Client in Lisbon got Tuesday.
+  Client in Toronto got Monday." A month-first parser cannot do that. The desk already read these as
+  one-day moves (`desk-notes.json`); they point at time-zone handling.
+
+## Why they were merged
+
+[Decision 0001](/kb/decisions/0001-dedupe-by-subject) merges reports on subject alone, and all three problems
+arrive with the same subjects ("Wrong day on the invite", "Date is wrong"). Intake's tag does not separate them
+either: it guesses from the reporter's browser, not from the tenant and the form they use.
+
+## How the count was made
+
+- One id, one report: the ticket export repeats reports across its pages.
+- The cause comes from the tenant and the channel (`causes.ts`), as on the #4471 page. Reports the desk read as
+  a one-day move count as `shift`, not under the tenant's cause.
+- Every body was read: apart from the one-day moves, each describes a day and month that swapped.
+
+The desk's own table, for comparison:
+
+<CauseTable ticket={4471} />
+
+<RenderStamp {signature} />
